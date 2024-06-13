@@ -79,7 +79,9 @@ function Home() {
 
 
 
-            <h1>Welcome to Pose Detection</h1>
+            <h1 style={{textAlign:'center'}}>Smart Steps</h1>
+            <h2 style={{textAlign:'center'}}>Enhance Dance Through AI Driven Analysis</h2>
+            <br/>
             <div className="button-container">
                 <Link to="/live" className="button">To Fetch Data from Live Camera</Link>
                 <Link to="/upload" className="button">To Fetch Data from Uploaded Video</Link>
