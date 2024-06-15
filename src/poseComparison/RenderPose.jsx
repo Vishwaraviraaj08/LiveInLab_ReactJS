@@ -1,20 +1,26 @@
 import React, { useRef, useEffect } from 'react';
 
-function RenderPose({ pose, colour }) {
+function RenderPose({ pose, colour, flip }) {
     const canvasRef = useRef(null);
 
 
     useEffect(() => {
         // console.log(colour);
         if (pose) {
-            drawSkeleton(pose, canvasRef.current, colour);
+            drawSkeleton(pose, canvasRef.current, colour, flip);
         }
     }, [pose]);
 
-    function drawSkeleton(pose, canvas, color) {
+    function drawSkeleton(pose, canvas, color, flip) {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // console.log(pose);
+
+        function flip(pose){
+            return pose.map(point => {
+                return {x: 1 - point.x, y: point.y}
+            });
+        }
 
         function normalizePose(pose) {
             const hipMidpoint = {x: (pose[23].x + pose[24].x) / 2, y: (pose[23].y + pose[24].y) / 2};
@@ -28,7 +34,7 @@ function RenderPose({ pose, colour }) {
         }
 
         function drawPose(pose, color) {
-            let tempPose = normalizePose(pose);
+            let tempPose = flip(normalizePose(pose));
             ctx.strokeStyle = color;
             ctx.lineWidth = 2;
             ctx.shadowColor = color;

@@ -16,6 +16,9 @@ function PoseComparison() {
         async function setupVideo(file) {
             const videoElement = videoRef.current;
             const url = URL.createObjectURL(file);
+            // flip video
+            videoElement.style.transform = 'scaleX(-1)';
+            
             videoElement.src = url;
             return new Promise((resolve) => {
                 videoElement.onloadedmetadata = () => {
@@ -32,8 +35,6 @@ function PoseComparison() {
             videoElement.style.transform = 'scaleX(-1)';
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             videoElement.srcObject = stream;
-
-
             return new Promise((resolve) => {
                 videoElement.onloadedmetadata = () => {
                     resolve(videoElement);
@@ -145,8 +146,8 @@ function PoseComparison() {
                 </div>
             </div>
             <div style={{display:'flex', flexDirection:'row', gap:'20px'}}>
-                <RenderPose pose={videoPose} colour={"red"}/>
-                <RenderPose pose={livePose} colour={"blue"}/>
+                <RenderPose pose={videoPose} colour={"red"} flip={true}/>
+                <RenderPose pose={livePose} colour={"blue"} flip={true}/>
             </div>
             <pre  id="output_coords">
                 {similarity != null && <p> Match : {percentageMatch(similarity).toFixed(2)}% </p> }

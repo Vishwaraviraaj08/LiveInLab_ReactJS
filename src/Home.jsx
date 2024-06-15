@@ -85,6 +85,7 @@ function Home() {
             <div className="button-container">
                 <Link to="/live" className="button">To Fetch Data from Live Camera</Link>
                 <Link to="/upload" className="button">To Fetch Data from Uploaded Video</Link>
+                <Link to="/comparison" className="button">To Compare Poses</Link>
             </div>
         </>
     )
