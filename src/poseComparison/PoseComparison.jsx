@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
+import RenderPose from './RenderPose.jsx';
 import '../App.css';
 
 function PoseComparison() {
     const videoRef = useRef(null);
     const liveVideoRef = useRef(null);
     const videoInputRef = useRef(null);
-    const liveCanvasRef = useRef(null);
-    const outputCoordsRef = useRef(null);
 
-    const [videoPoses, setVideoPoses] = useState([]);
-    const [livePoses, setLivePoses] = useState([]);
-    const [similarities, setSimilarities] = useState([]);
+    const [videoPose, setVideoPose] = useState(null);
+    const [livePose, setLivePose] = useState(null);
+    const [similarity, setSimilarity] = useState(null);
 
     useEffect(() => {
         // Setup for uploaded video
@@ -27,10 +26,13 @@ function PoseComparison() {
 
         // Setup for live camera
         async function setupCamera() {
+
             const videoElement = liveVideoRef.current;
-            const canvasElement = liveCanvasRef.current;
+            // flip camera
+            videoElement.style.transform = 'scaleX(-1)';
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             videoElement.srcObject = stream;
+
 
             return new Promise((resolve) => {
                 videoElement.onloadedmetadata = () => {
@@ -59,13 +61,13 @@ function PoseComparison() {
                         y: landmark.y,
                         z: landmark.z
                     }));
-                    setPoses(prevPoses => [...prevPoses, poseCoordinates]);
+                    setPoses(prevPose => poseCoordinates);
                 }
             });
 
             videoElement.addEventListener('play', () => {
                 const processVideoFrame = async () => {
-                    if (videoElement.paused || videoElement.ended) {
+                    if (videoElement.ended) {
                         return;
                     }
                     await pose.send({ image: videoElement });
@@ -82,11 +84,11 @@ function PoseComparison() {
             if (!file) return;
 
             const videoElement = await setupVideo(file);
-            extractPoses(videoElement, setVideoPoses);
+            extractPoses(videoElement, setVideoPose);
         });
 
         setupCamera().then(liveVideoElement => {
-            extractPoses(liveVideoElement, setLivePoses);
+            extractPoses(liveVideoElement, setLivePose);
         });
 
     }, []);
@@ -112,29 +114,42 @@ function PoseComparison() {
         return compDirections(dirs1, dirs2);
     }
 
+    function percentageMatch(similarities) {
+        return (similarities.reduce((sum, similarity) => sum + similarity, 0) / similarities.length) * 100;
+    }
+
     useEffect(() => {
-        if (videoPoses.length > 0 && livePoses.length > 0) {
-            const latestVideoPose = videoPoses[videoPoses.length - 1];
-            const latestLivePose = livePoses[livePoses.length - 1];
-            const similarities = calculateSimilarities(latestVideoPose, latestLivePose);
-            setSimilarities(similarities);
+        if (videoPose != null && livePose != null) {
+            
+            const tempSimilarity = calculateSimilarities(videoPose, livePose);
+            setSimilarity(tempSimilarity);
+            let percentageMatchValue = percentageMatch(tempSimilarity);
+            if(percentageMatchValue <= 85){
+                videoRef.current.pause();
+            }
+            else{
+                videoRef.current.play();
+            }
         }
-    }, [videoPoses, livePoses]);
+    }, [videoPose, livePose]);
 
     return (
         <div className="App">
             <input type="file" ref={videoInputRef} accept="video/*" className="video-input" />
             <div style={{display:'flex', flexDirection:'row', gap:'20px'}}>
                 <div className="video-container">
-                    <video ref={videoRef} width="640" height="480" controls></video>
+                    <video ref={videoRef} width="640" height="480" controls muted></video>
                 </div>
                 <div className="video-container">
                     <video ref={liveVideoRef} width="640" height="480" autoPlay muted></video>
-                    <canvas ref={liveCanvasRef} width="640" height="480" style={{ display: 'none' }}></canvas>
                 </div>
             </div>
-            <pre ref={outputCoordsRef} id="output_coords">
-                Similarities: {JSON.stringify(similarities, null, 2)}
+            <div style={{display:'flex', flexDirection:'row', gap:'20px'}}>
+                <RenderPose pose={videoPose} colour={"red"}/>
+                <RenderPose pose={livePose} colour={"blue"}/>
+            </div>
+            <pre  id="output_coords">
+                {similarity != null && <p> Match : {percentageMatch(similarity).toFixed(2)}% </p> }
             </pre>
         </div>
     );
