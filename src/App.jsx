@@ -8,6 +8,8 @@ import Home from "./Home.jsx";
 import LandingPage from "./pages/landingPage/LandingPage.jsx";
 import Login from './pages/login/Login.jsx'
 import Signup from "./pages/signup/Signup.jsx";
+import RenderChart from "./poseComparison/RenderChart.jsx";
+import PoseCompare from "./pages/PoseCompare/PoseCompare.jsx";
 
 
 
@@ -24,7 +26,7 @@ function App() {
             <Route path="/signup" element={<Signup/>}/>
             {/*<Route path="/upload" element={<FromUploadedVideo />} />*/}
             {/*<Route path="/live" element={<FromLiveCamera />} />*/}
-            <Route path="/comparison" element={<PoseComparison />} />
+            <Route path="/comparison" element={<PoseComparison/>} />
         </Routes>
     </>
   )
