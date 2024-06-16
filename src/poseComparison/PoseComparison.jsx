@@ -83,7 +83,7 @@ function PoseComparison() {
             if (!file) return;
 
             const videoElement = await setupVideo(file);
-            extractPoses(videoElement, setVideoPose);
+            await extractPoses(videoElement, setVideoPose);
         });
 
         setupCamera().then(liveVideoElement => {
@@ -160,7 +160,7 @@ function PoseComparison() {
     return (
         <div className="App">
             <input type="file" ref={videoInputRef} accept="video/*" className="video-input" />
-            <div style={{display:'flex', flexDirection:'row', gap:'20px'}}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
                 <div className="video-container">
                     <video ref={videoRef} width="640" height="480" controls muted></video>
                 </div>
@@ -168,14 +168,10 @@ function PoseComparison() {
                     <video ref={liveVideoRef} width="640" height="480" autoPlay muted></video>
                 </div>
             </div>
-            <div style={{display:'flex', flexDirection:'row', gap:'20px'}}>
-                <RenderPose pose={videoPose} colour={"red"} flip={true}/>
-                <RenderPose pose={livePose} colour={"blue"} flip={true}/>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+                <RenderPose pose={videoPose} colour={"red"} flip={true} />
+                <RenderPose pose={livePose} colour={"blue"} flip={true} />
             </div>
-            
-            
-                
-            <p style={{fontSize: '30px'}}>Match Percentage Over Time</p>
             <pre id="output_coords">
                 {similarity != null && <p> Match : {percentageMatch(similarity).toFixed(2)}% </p>}
             </pre>
