@@ -11,7 +11,7 @@ const LandingPage = () => {
                     <span className="landing-two"></span>
                     <span className="landing-three"></span>
                     <div className="landing-circle">
-                        <h2 className="landing-DrugRadar" style={{ fontFamily: "'Poppins', sans-serif" }}>Smart Steps</h2>
+                        <h2 className="landing-DrugRadar" style={{ fontFamily: "'Poppins', sans-serif", color:"white" }}>Smart Steps</h2>
                         <br />
                         <p style={{ fontFamily: "'Poppins', sans-serif" }}>Unlock Your Dance Potential: Rhythm, Precision, Progress</p>
                     </div>
