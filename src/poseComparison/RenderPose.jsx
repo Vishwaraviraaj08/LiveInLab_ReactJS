@@ -5,7 +5,6 @@ function RenderPose({ pose, colour, flip }) {
 
 
     useEffect(() => {
-        // console.log(colour);
         if (pose) {
             drawSkeleton(pose, canvasRef.current, colour, flip);
         }
@@ -14,7 +13,6 @@ function RenderPose({ pose, colour, flip }) {
     function drawSkeleton(pose, canvas, color, flip) {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // console.log(pose);
 
         function flip(pose){
             return pose.map(point => {

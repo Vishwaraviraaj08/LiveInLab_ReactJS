@@ -68,7 +68,7 @@ function PoseComparison() {
 
             videoElement.addEventListener('play', () => {
                 const processVideoFrame = async () => {
-                    if (videoElement.ended) {
+                    if (videoElement.paused || videoElement.ended) {
                         return;
                     }
                     await pose.send({ image: videoElement });
@@ -119,6 +119,25 @@ function PoseComparison() {
         return (similarities.reduce((sum, similarity) => sum + similarity, 0) / similarities.length) * 100;
     }
 
+    function eachPercentageMatch(similarities, totalPercentageMatch) {
+        
+        // [0, 1], [1, 2], [2, 3], [3, 7], [0, 4], [4, 5], [5, 6],
+        // [6, 8], [9, 10], [11, 12], [11, 13], [13, 15], [15, 17], [15, 19],
+        // [15, 21], [17, 19], [12, 14], [14, 16], [16, 18], [16, 20], [16, 22],
+        // [18, 20], [11, 23], [12, 24], [23, 24], [23, 25], [24, 26], [25, 27],
+        // [26, 28], [27, 29], [28, 30], [29, 31], [30, 32], [27, 31], [28, 32]
+        
+        const limbIndexes = [9, 10, 11, 16, 17, 22, 23, 24, 25, 27, 26, 28];
+        let eachPercentageMatch = [];
+        
+        for(let i of limbIndexes){
+            // console.log(window.POSE_CONNECTIONS[i]);
+            eachPercentageMatch.push((similarities[i] * 100).toFixed(2));
+        }
+        return eachPercentageMatch;
+    }
+    
+
     useEffect(() => {
         if (videoPose != null && livePose != null) {
             
@@ -131,6 +150,7 @@ function PoseComparison() {
             else{
                 videoRef.current.play();
             }
+            console.log(eachPercentageMatch(tempSimilarity, percentageMatchValue));
         }
     }, [videoPose, livePose]);
 
