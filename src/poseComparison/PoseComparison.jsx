@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import RenderPose from './RenderPose.jsx';
 import '../App.css';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 
 function PoseComparison() {
     const videoRef = useRef(null);
@@ -10,6 +12,9 @@ function PoseComparison() {
     const [videoPose, setVideoPose] = useState(null);
     const [livePose, setLivePose] = useState(null);
     const [similarity, setSimilarity] = useState(null);
+    const [matchPercentages, setMatchPercentages] = useState([]);
+    const [videoDuration, setVideoDuration] = useState(0);
+    const [chartData, setChartData] = useState(null);
 
     useEffect(() => {
         // Setup for uploaded video
@@ -18,10 +23,10 @@ function PoseComparison() {
             const url = URL.createObjectURL(file);
             // flip video
             videoElement.style.transform = 'scaleX(-1)';
-            
             videoElement.src = url;
             return new Promise((resolve) => {
                 videoElement.onloadedmetadata = () => {
+                    setVideoDuration(videoElement.duration);
                     resolve(videoElement);
                 };
             });
@@ -29,7 +34,6 @@ function PoseComparison() {
 
         // Setup for live camera
         async function setupCamera() {
-
             const videoElement = liveVideoRef.current;
             // flip camera
             videoElement.style.transform = 'scaleX(-1)';
@@ -62,7 +66,7 @@ function PoseComparison() {
                         y: landmark.y,
                         z: landmark.z
                     }));
-                    setPoses(prevPose => poseCoordinates);
+                    setPoses(poseCoordinates);
                 }
             });
 
@@ -78,8 +82,6 @@ function PoseComparison() {
             });
         }
 
-        
-
         videoInputRef.current.addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (!file) return;
@@ -93,6 +95,34 @@ function PoseComparison() {
         });
 
     }, []);
+
+    useEffect(() => {
+        if (videoPose != null && livePose != null) {
+            const tempSimilarity = calculateSimilarities(videoPose, livePose);
+            setSimilarity(tempSimilarity);
+
+            const percentageMatchValue = percentageMatch(tempSimilarity);
+            if (percentageMatchValue <= 70 && !videoRef.current.paused) {
+                videoRef.current.pause();
+            } else if (percentageMatchValue > 70 && videoRef.current.paused) {
+                setMatchPercentages(prev => [...prev, { time: videoRef.current.currentTime, percentage: percentageMatchValue }]);
+                videoRef.current.play();
+            }
+        }
+        
+    }, [videoPose, livePose]);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.addEventListener('ended', generateReport);
+        }
+
+        return () => {
+            if (videoRef.current) {
+                videoRef.current.removeEventListener('ended', generateReport);
+            }
+        };
+    }, [matchPercentages]);
 
     function calculateSimilarities(pose1, pose2) {
         function getDirectionsFromPose(pose) {
@@ -120,39 +150,62 @@ function PoseComparison() {
     }
 
     function eachPercentageMatch(similarities, totalPercentageMatch) {
-        
-        // [0, 1], [1, 2], [2, 3], [3, 7], [0, 4], [4, 5], [5, 6],
-        // [6, 8], [9, 10], [11, 12], [11, 13], [13, 15], [15, 17], [15, 19],
-        // [15, 21], [17, 19], [12, 14], [14, 16], [16, 18], [16, 20], [16, 22],
-        // [18, 20], [11, 23], [12, 24], [23, 24], [23, 25], [24, 26], [25, 27],
-        // [26, 28], [27, 29], [28, 30], [29, 31], [30, 32], [27, 31], [28, 32]
-        
         const limbIndexes = [9, 10, 11, 16, 17, 22, 23, 24, 25, 27, 26, 28];
         let eachPercentageMatch = [];
-        
         for(let i of limbIndexes){
-            // console.log(window.POSE_CONNECTIONS[i]);
             eachPercentageMatch.push((similarities[i] * 100).toFixed(2));
         }
         return eachPercentageMatch;
     }
-    
 
-    useEffect(() => {
-        if (videoPose != null && livePose != null) {
-            
-            const tempSimilarity = calculateSimilarities(videoPose, livePose);
-            setSimilarity(tempSimilarity);
-            let percentageMatchValue = percentageMatch(tempSimilarity);
-            if(percentageMatchValue <= 85){
-                videoRef.current.pause();
-            }
-            else{
-                videoRef.current.play();
-            }
-            console.log(eachPercentageMatch(tempSimilarity, percentageMatchValue));
-        }
-    }, [videoPose, livePose]);
+    function generateReport() {
+        console.log("Report Generated");
+    }
+
+    const data = [
+        {
+          name: 'Page A',
+          uv: 4000,
+          pv: 2400,
+          amt: 2400,
+        },
+        {
+          name: 'Page B',
+          uv: 3000,
+          pv: 1398,
+          amt: 2210,
+        },
+        {
+          name: 'Page C',
+          uv: 2000,
+          pv: 9800,
+          amt: 2290,
+        },
+        {
+          name: 'Page D',
+          uv: 2780,
+          pv: 3908,
+          amt: 2000,
+        },
+        {
+          name: 'Page E',
+          uv: 1890,
+          pv: 4800,
+          amt: 2181,
+        },
+        {
+          name: 'Page F',
+          uv: 2390,
+          pv: 3800,
+          amt: 2500,
+        },
+        {
+          name: 'Page G',
+          uv: 3490,
+          pv: 4300,
+          amt: 2100,
+        },
+      ];
 
     return (
         <div className="App">
@@ -169,9 +222,35 @@ function PoseComparison() {
                 <RenderPose pose={videoPose} colour={"red"} flip={true}/>
                 <RenderPose pose={livePose} colour={"blue"} flip={true}/>
             </div>
-            <pre  id="output_coords">
-                {similarity != null && <p> Match : {percentageMatch(similarity).toFixed(2)}% </p> }
+            <pre id="output_coords">
+                {similarity != null && <p> Match : {percentageMatch(similarity).toFixed(2)}% </p>}
             </pre>
+            
+                
+            <p style={{fontSize: '30px'}}>Match Percentage Over Time</p>
+            <ResponsiveContainer>
+                <LineChart
+                width={500}
+                height={300}
+                data={data}
+                margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                }}
+                >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                </LineChart>
+            </ResponsiveContainer>
+                
+            
         </div>
     );
 }
