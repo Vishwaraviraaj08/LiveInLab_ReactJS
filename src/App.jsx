@@ -8,8 +8,7 @@ import Home from "./Home.jsx";
 import LandingPage from "./pages/landingPage/LandingPage.jsx";
 import Login from './pages/login/Login.jsx'
 import Signup from "./pages/signup/Signup.jsx";
-import RenderChart from "./poseComparison/RenderChart.jsx";
-import PoseCompare from "./pages/PoseCompare/PoseCompare.jsx";
+
 
 
 

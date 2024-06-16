@@ -4,12 +4,17 @@ import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
-const MatchPercentageChart = ({ matchPercentages }) => {
+const MatchPercentageChart = ({ matchPercentages, videoDuration }) => {
+    let labels = [];
+    for (let i = 0.0; i <= Math.ceil(videoDuration); i += 0.01) {
+        labels.push(i);
+    }
+    console.log(matchPercentages.map((point) => {return {x: point.time.toFixed(2), y: point.percentage}}));
     const data = {
-        labels: matchPercentages.map((_, index) => index + 1), // assuming one match percentage per second
+        labels: labels, 
         datasets: [{
             label: 'Match Percentage',
-            data: matchPercentages,
+            data: matchPercentages.map((point) => {return {x: point.time.toFixed(2), y: point.percentage}}),
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
             fill: false,
@@ -23,10 +28,9 @@ const MatchPercentageChart = ({ matchPercentages }) => {
                 max: 100,
             },
             x: {
-                title: {
-                    display: true,
-                    text: 'Time (s)'
-                }
+                beginAtZero: true,
+                max: Math.ceil(videoDuration),
+                type: 'linear'
             }
         }
     };

@@ -62,7 +62,6 @@ function FromUploadedVideo() {
                     z: landmark.z
                 }));
                 outputCoordsRef.current.innerHTML = JSON.stringify(poseCoordinates, null, 2);
-                console.log(poseCoordinates);
             }
         }
 

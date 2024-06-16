@@ -91,6 +91,7 @@ function PoseComparison() {
         });
 
         videoRef.current.addEventListener('ended', () => {
+            // console.log("Video Ended");
             setVideoEnded(true);
         });
 
@@ -105,11 +106,23 @@ function PoseComparison() {
             if (percentageMatchValue <= 70 && !videoRef.current.paused) {
                 videoRef.current.pause();
             }
-            if (percentageMatchValue > 70) {
-                setMatchPercentages(prev => [...prev, { time: videoRef.current.currentTime, percentage: percentageMatchValue }]);
+            if (percentageMatchValue > 70 && !videoEnded) {
+                
+                setMatchPercentages(prev => {
+                    if(prev.length === 0){
+                        return [{ time: videoRef.current.currentTime, percentage: percentageMatchValue }];
+                    }
+                    else{
+                        return [...prev, { time: videoRef.current.currentTime, percentage: percentageMatchValue }];
+                    }
+                });
+
+                if(videoRef.current.paused){
+                    videoRef.current.play();
+                }
             }
-            if(videoRef.current.paused && percentageMatchValue > 70 && !videoEnded){
-                videoRef.current.play();
+            if(videoEnded){
+                videoRef.current.pause();
             }
         }
         
@@ -151,12 +164,6 @@ function PoseComparison() {
         return eachPercentageMatch;
     }
 
-    function generateReport() {
-        console.log("Report Generated");
-    }
-
-    
-
     return (
         <div className="App">
             <input type="file" ref={videoInputRef} accept="video/*" className="video-input" />
@@ -175,7 +182,7 @@ function PoseComparison() {
             <pre id="output_coords">
                 {similarity != null && <p> Match : {percentageMatch(similarity).toFixed(2)}% </p>}
             </pre>
-            {videoEnded && <RenderChart matchPercentages={matchPercentages} />}
+            {videoEnded && <RenderChart matchPercentages={matchPercentages} videoDuration={videoDuration} />}
             
         </div>
     );
