@@ -1,0 +1,64 @@
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100vh;
+    width: 100vw;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    flex-direction: column;
+}
+
+.row1, .row2{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.row1{
+    flex: 7;
+}
+
+.dashboard-video-player{
+    flex: 4;
+    border: 2px solid black;
+    display: flex;
+    padding-bottom: 50px;
+}
+
+.dashboard-stats{
+    display: flex;
+    flex: 2;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dashboard-points{
+flex:1;
+    border: 2px solid black;
+}
+
+.dashboard-options{
+flex: 1;
+    border: 2px solid black;
+}
+
+.row2{
+    flex: 4.5;
+    display: flex;
+}
+
+.dashboard-video-pose{
+    flex: 1;
+    border: 2px solid black;
+}
+
+.dashboard-user-pose{
+    flex: 1;
+    border: 2px solid black;
+}
+.dashboard-live-cam{
+    flex: 1;
+    border: 2px solid black;
+}
+
