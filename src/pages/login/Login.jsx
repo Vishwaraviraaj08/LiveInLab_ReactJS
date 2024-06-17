@@ -26,7 +26,7 @@ const Login = () => {
                         </div>
 
                         <button className="loginpage-submit">Login</button>
-                        <h4 style={{color:"white", textAlign:"center"}}>If new user, <Link to={'/signup'}> Sign Up !</Link></h4>
+                        <h4 style={{color:"white", textAlign:"center"}}>If new user, <Link to={'/signup'} style={{color: '#8b33c5'}}> Sign Up !</Link></h4>
                     </form>
                 </div>
             </section>

@@ -30,7 +30,7 @@ const Signup = () => {
                         </div>
 
                         <button className="loginpage-submit">Sign Up</button>
-                        <h4 style={{color:"white", textAlign:"center"}}>If already have an account, <Link to={'/login'}> Sign in !</Link></h4>
+                        <h4 style={{color:"white", textAlign:"center"}}>If already have an account, <Link to={'/login'} style = {{color: '#8b33c5'}}> Sign in !</Link></h4>
                     </form>
                 </div>
             </section>

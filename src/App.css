@@ -3,13 +3,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color: #282c34;
   color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
-.App {
+/* .App {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,20 +24,13 @@ body {
   align-items: center;
   position: relative;
   margin-bottom: 20px;
-}
+} */
 
-video {
-  width: 100%;
-  height: auto;
-  border: 3px solid #4caf50;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
 
 video::-webkit-media-controls-enclosure {
   transform: scaleX(-1);
 }
-
+/* 
 canvas {
   width: 100%;
   height: 100%;
@@ -165,4 +154,4 @@ video {
     padding: 5px;
     max-height: 150px;
   }
-}
+} */

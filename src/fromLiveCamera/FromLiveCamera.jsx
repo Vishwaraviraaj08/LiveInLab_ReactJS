@@ -79,7 +79,7 @@ function FromLiveCamera() {
     }, []);
 
     return (
-        <div className="App">
+        <div>
             <div className="video-container">
                 <video ref={videoRef} width="640" height="480" autoPlay muted></video>
                 <canvas ref={canvasRef} width="640" height="480" style={{ display: 'none' }}></canvas>

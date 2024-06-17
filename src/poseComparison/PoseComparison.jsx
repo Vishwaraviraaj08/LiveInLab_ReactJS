@@ -107,25 +107,30 @@ function PoseComparison() {
                 videoRef.current.pause();
             }
             if (percentageMatchValue > 70 && !videoEnded) {
-                
+
                 setMatchPercentages(prev => {
-                    if(prev.length === 0){
+                    if (prev.length === 0) {
                         return [{ time: videoRef.current.currentTime, percentage: percentageMatchValue }];
                     }
-                    else{
-                        return [...prev, { time: videoRef.current.currentTime, percentage: percentageMatchValue }];
+                    else {
+                        if (prev[prev.length - 1].time < videoRef.current.currentTime) {
+                            return [...prev, { time: videoRef.current.currentTime, percentage: percentageMatchValue }];
+                        }
+                        else {
+                            return prev;
+                        }
                     }
                 });
 
-                if(videoRef.current.paused){
+                if (videoRef.current.paused) {
                     videoRef.current.play();
                 }
             }
-            if(videoEnded){
+            if (videoEnded) {
                 videoRef.current.pause();
             }
         }
-        
+
     }, [videoPose, livePose]);
 
     function calculateSimilarities(pose1, pose2) {
@@ -133,7 +138,7 @@ function PoseComparison() {
             const directions = [];
             for (const [i, j] of window.POSE_CONNECTIONS) {
                 const diff = [pose[i].x - pose[j].x, pose[i].y - pose[j].y, pose[i].z - pose[j].z];
-                const mag = Math.sqrt(diff[0]**2 + diff[1]**2 + diff[2]**2);
+                const mag = Math.sqrt(diff[0] ** 2 + diff[1] ** 2 + diff[2] ** 2);
                 directions.push(diff.map(d => d / mag));
             }
             return directions;
@@ -157,16 +162,64 @@ function PoseComparison() {
         const limbIndexes = [9, 10, 11, 16, 17, 22, 23, 24, 25, 27, 26, 28];
         let eachPercentageMatch = [];
 
-    
-        for(let i of limbIndexes){
+
+        for (let i of limbIndexes) {
             eachPercentageMatch.push((similarities[i] * 100).toFixed(2));
         }
         return eachPercentageMatch;
     }
 
     return (
-        <div className="App">
+        <div >
+
+        <div className="container-fluid">
+            <div className="row">
+                <div className="col-md-8">
+                <div className="p-2 border" style={{ height: '300px' }}>
+                    video player
+                </div>
+                </div>
+                <div className="col-md-4">
+                <div className="p-2 border" style={{ height: '150px' }}>
+                    points matches
+                </div>
+                <div className="p-2 border mt-2" style={{ height: '150px' }}>
+                    options buttons
+                </div>
+                </div>
+            </div>
+            <div className="row mt-2">
+                <div className="col-md-4">
+                <div className="p-2 border" style={{ height: '150px' }}>
+                    video pose
+                </div>
+                </div>
+                <div className="col-md-4">
+                <div className="p-2 border" style={{ height: '150px' }}>
+                    user pose
+                </div>
+                </div>
+                <div className="col-md-4">
+                <div className="p-2 border" style={{ height: '150px' }}>
+                    live cam
+                </div>
+                </div>
+            </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
             <input type="file" ref={videoInputRef} accept="video/*" className="video-input" />
+
             <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
                 <div className="video-container">
                     <video ref={videoRef} width="640" height="480" controls muted></video>
@@ -175,6 +228,7 @@ function PoseComparison() {
                     <video ref={liveVideoRef} width="640" height="480" autoPlay muted></video>
                 </div>
             </div>
+
             <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
                 <RenderPose pose={videoPose} colour={"red"} flip={true} />
                 <RenderPose pose={livePose} colour={"blue"} flip={true} />
@@ -183,7 +237,7 @@ function PoseComparison() {
                 {similarity != null && <p> Match : {percentageMatch(similarity).toFixed(2)}% </p>}
             </pre>
             {videoEnded && <RenderChart matchPercentages={matchPercentages} videoDuration={videoDuration} />}
-            
+
         </div>
     );
 }

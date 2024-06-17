@@ -4,7 +4,6 @@ import './App.css'
 import FromLiveCamera from "./fromLiveCamera/FromLiveCamera.jsx";
 import FromUploadedVideo from "./fromUploadedVideo/FromUploadedVideo.jsx";
 import PoseComparison from "./poseComparison/PoseComparison.jsx";
-import Home from "./Home.jsx";
 import LandingPage from "./pages/landingPage/LandingPage.jsx";
 import Login from './pages/login/Login.jsx'
 import Signup from "./pages/signup/Signup.jsx";

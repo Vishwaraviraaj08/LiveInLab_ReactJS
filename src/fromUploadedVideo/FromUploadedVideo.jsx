@@ -69,7 +69,7 @@ function FromUploadedVideo() {
     }, []);
 
     return (
-        <div className="App">
+        <div>
             <input type="file" ref={videoInputRef} accept="video/*" className="video-input" />
             <div style={{display:'flex', flexDirection:'row', gap:'20px'}}>
                 <div className="video-container">
