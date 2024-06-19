@@ -16,7 +16,7 @@ const Login = () => {
                     <p className="loginpage-welcome-message">Please, provide login credentials to proceed and have access to all our services</p>
 
                     <form className="loginpage-login-form">
-                        <div className="loginpage-form-control">
+                        <div className="loginpage-form-control" >
                             <input type="text" placeholder="Username" />
                             <i className="fas fa-user"></i>
                         </div>
