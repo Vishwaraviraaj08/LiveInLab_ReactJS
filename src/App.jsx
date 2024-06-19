@@ -7,6 +7,8 @@ import PoseComparison from "./poseComparison/PoseComparison.jsx";
 import LandingPage from "./pages/landingPage/LandingPage.jsx";
 import Login from './pages/login/Login.jsx'
 import Signup from "./pages/signup/Signup.jsx";
+import History from "./pages/history/History.jsx"
+import Testing from "./pages/testing/Testing.jsx";
 
 
 
@@ -25,6 +27,8 @@ function App() {
             {/*<Route path="/upload" element={<FromUploadedVideo />} />*/}
             {/*<Route path="/live" element={<FromLiveCamera />} />*/}
             <Route path="/comparison" element={<PoseComparison/>} />
+            <Route path={"/history"} element={<History/>}/>
+            <Route path={"/testing"} element={<Testing/>}/>
         </Routes>
     </>
   )

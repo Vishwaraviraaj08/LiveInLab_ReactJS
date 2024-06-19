@@ -6,9 +6,12 @@ import './PoseComparison.css';
 
 
 function PoseComparison() {
+
     const videoRef = useRef(null);
     const liveVideoRef = useRef(null);
     const videoInputRef = useRef(null);
+    const [uploaded, isUploaded] = useState(false);
+
 
     const [videoPose, setVideoPose] = useState(null);
     const [livePose, setLivePose] = useState(null);
@@ -17,12 +20,15 @@ function PoseComparison() {
     const [videoDuration, setVideoDuration] = useState(0);
     const [videoEnded, setVideoEnded] = useState(false);
 
+
     useEffect(() => {
         async function setupVideo(file) {
             const videoElement = videoRef.current;
             const url = URL.createObjectURL(file);
             videoElement.style.transform = 'scaleX(-1)';
             videoElement.src = url;
+            window.scrollTo(0, document.body.scrollHeight);
+
             return new Promise((resolve) => {
                 videoElement.onloadedmetadata = () => {
                     setVideoDuration(videoElement.duration);
@@ -166,58 +172,104 @@ function PoseComparison() {
         return eachPercentageMatch;
     }
 
+    const [dragging, setDragging] = useState(false);
+    const [file, setFile] = useState(null);
+
+    const handleDragEnter = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(false);
+        const uploadedFile = e.dataTransfer.files[0];
+        setFile(uploadedFile);
+        isUploaded(true);
+    //     scroll down 100%
+
+    };
+
+
+
+
+
+
+
     return (<div>
 
-        <div className="dashboard-container">
-            <div className={"row1"}>
-                <div className="dashboard-video-player">
-                    <video ref={videoRef} width="700px" height="100%" controls muted style={{margin: 'auto'}}></video>
-                </div>
-                <div className={"dashboard-stats"}>
-                    <div className="dashboard-points">
-        
-                    </div>
-                    <div className="dashboard-options">
-        
-                    </div>
-                </div>
-            </div>
-        
-            <div className={"row2"}>
-                <div className="dashboard-video-pose">
-                    <RenderPose pose={videoPose} colour={"red"} flip={true}/>
-                </div>
-                <div className="dashboard-user-pose">
-                    <RenderPose pose={livePose} colour={"blue"} flip={true}/>
-                </div>
-                <div className="dashboard-live-cam">
-                    <video ref={liveVideoRef} width="100%" height="auto" autoPlay muted></video>
-                </div>
+        <div className={"upload-container"}>
+            <div
+                className={`file-upload-container ${dragging ? 'dragging' : ''}`}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+            >
+                <input
+                    type="file"
+                    id="file-upload-input"
+                    className="file-upload-input"
+                    ref={videoInputRef}
+                    accept="video/*"
+                    width={"50px"}
+                />
+
+                <label htmlFor="file-upload-input" className="file-upload-label">
+                    {file ? file.name : 'Drag and drop a file or click to upload'}
+                </label>
             </div>
         </div>
 
+        <div className={"comparison-main"}>
+            <div className="layout-container">
+                <div className="layout-left">
+                    <div className="layout-left-top">
+                        <div className="layout-left-top-1">
+                            <video ref={videoRef} width="100%" height="100%" controls muted></video>
+                        </div>
+                        <div className="layout-left-top-2">
+                            Errors in each Limb:<br/> {similarity != null && <p style={{
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }}> {eachPercentageMatch(similarity).map((value, index) => <li>{value}</li>)}</p>}
+                        </div>
+                    </div>
+                    <div className="layout-left-bottom">
+                        <div className="layout-left-bottom-1" style={{paddingLeft:'80px'}}>
+                        <video ref={liveVideoRef} width="auto" height={"100%"} autoPlay muted></video>
+                    </div>
+                    <div className="layout-left-bottom-2">
+                        overall Match : {similarity != null && <h1> {percentageMatch(similarity).toFixed(2)}% </h1>}
+                    </div>
+                </div>
+            </div>
+            <div className="layout-right">
+                <div className="layout-right-top">
+                    <RenderPose pose={videoPose} colour={"red"} flip={true}/>
+                </div>
+                <div className="layout-right-bottom">
+                    <RenderPose pose={livePose} colour={"blue"} flip={true}/>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <input type="file" ref={videoInputRef} accept="video/*" className="" width={"50px"} style={{padding: "0 0px"}}/>
 
-            {/*<div style={{display: 'flex', flexDirection: 'row', gap: '20px'}}>*/}
-            {/*    <div className="video-container">*/}
-            {/*        /!*<video ref={videoRef} width="640" height="480" controls muted></video>*!/*/}
-            {/*    </div>*/}
-            {/*    <div className="video-container">*/}
-            {/*        /!*<video ref={liveVideoRef} width="640" height="480" autoPlay muted></video>*!/*/}
-            {/*    </div>*/}
-            {/*</div>*/}
 
-            {/*<div style={{display: 'flex', flexDirection: 'row', gap: '20px'}}>*/}
-            {/*    /!*<RenderPose pose={videoPose} colour={"red"} flip={true}/>*!/*/}
-            {/*    /!*<RenderPose pose={livePose} colour={"blue"} flip={true}/>*!/*/}
-            {/*</div>*/}
-            {/*<pre id="output_coords">*/}
-            {/*    {similarity != null && <p> Match : {percentageMatch(similarity).toFixed(2)}% </p>}*/}
-            {/*</pre>*/}
-            {/*{videoEnded && <RenderChart matchPercentages={matchPercentages} videoDuration={videoDuration}/>}*/}
+        {/*{videoEnded && <RenderChart matchPercentages={matchPercentages} videoDuration={videoDuration}/>}*/}
 
-        </div>);
+    </div>);
 }
+
+
 
 export default PoseComparison;

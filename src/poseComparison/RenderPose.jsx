@@ -60,7 +60,7 @@ function RenderPose({ pose, colour, flip }) {
 
     return (
         <div className="canvas-container">
-            <canvas ref={canvasRef} width="640" height="480"></canvas>
+            <canvas ref={canvasRef} width="400px" height="350px"></canvas>
         </div>
     );
 }
