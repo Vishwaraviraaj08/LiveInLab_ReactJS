@@ -27,7 +27,7 @@ function App() {
             {/*<Route path="/upload" element={<FromUploadedVideo />} />*/}
             {/*<Route path="/live" element={<FromLiveCamera />} />*/}
             <Route path="/comparison" element={<PoseComparison/>} />
-            <Route path={"/history"} element={<History/>}/>
+            <Route path={"/history"} element={<History userId={userId}/>}/>
             <Route path={"/home"} element={<Home/>} />
         </Routes>
     </>
