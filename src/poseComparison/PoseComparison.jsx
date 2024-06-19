@@ -11,6 +11,7 @@ function PoseComparison() {
     const liveVideoRef = useRef(null);
     const videoInputRef = useRef(null);
     const [uploaded, isUploaded] = useState(false);
+    const [labelName, setLabelName] = useState(null);
 
 
     const [videoPose, setVideoPose] = useState(null);
@@ -20,6 +21,7 @@ function PoseComparison() {
     const [videoDuration, setVideoDuration] = useState(0);
     const [videoEnded, setVideoEnded] = useState(false);
     const limbNames = ["Right-Upper-Arm", "Right-Lower-Arm" , "Shoulder" , "Left-Upper-Arm" , "Left-Lower-Arm" , "Right-Lumbar" , "Left-Lumbar" , "Abdomen" , "Right-Thigh" , "Right-Cough" , "Left-Thigh" , "Left-Cough"]
+    const [file, setFile] = useState(null);
 
 
     useEffect(() => {
@@ -28,7 +30,9 @@ function PoseComparison() {
             const url = URL.createObjectURL(file);
             videoElement.style.transform = 'scaleX(-1)';
             videoElement.src = url;
-            window.scrollTo(0, document.body.scrollHeight);
+            if (labelName != null && uploaded) {
+                window.scrollTo(0, document.body.scrollHeight);
+            }
 
             return new Promise((resolve) => {
                 videoElement.onloadedmetadata = () => {
@@ -86,6 +90,7 @@ function PoseComparison() {
 
         videoInputRef.current.addEventListener('change', async (event) => {
             const file = event.target.files[0];
+            setFile(file)
             if (!file) return;
 
             const videoElement = await setupVideo(file);
@@ -109,10 +114,10 @@ function PoseComparison() {
             setSimilarity(tempSimilarity);
 
             const percentageMatchValue = percentageMatch(tempSimilarity);
-            if (percentageMatchValue <= 70 && !videoRef.current.paused) {
+            if (percentageMatchValue <= 85 && !videoRef.current.paused) {
                 videoRef.current.pause();
             }
-            if (percentageMatchValue > 70 && !videoEnded) {
+            if (percentageMatchValue > 85 && !videoEnded) {
 
                 setMatchPercentages(prev => {
                     if (prev.length === 0) {
@@ -174,7 +179,6 @@ function PoseComparison() {
     }
 
     const [dragging, setDragging] = useState(false);
-    const [file, setFile] = useState(null);
 
     const handleDragEnter = (e) => {
         e.preventDefault();
@@ -195,12 +199,16 @@ function PoseComparison() {
         const uploadedFile = e.dataTransfer.files[0];
         setFile(uploadedFile);
         isUploaded(true);
-    //     scroll down 100%
-
     };
 
 
 
+
+
+    const handleLabelName = (event) => {
+        setLabelName(document.querySelector('.textInput').value);
+        window.scrollTo(0, document.body.scrollHeight);
+    };
 
 
 
@@ -227,6 +235,20 @@ function PoseComparison() {
                 <label htmlFor="file-upload-input" className="file-upload-label">
                     {file ? file.name : 'Drag and drop a file or click to upload'}
                 </label>
+
+                <br/>
+                <br/>
+                <div className="textInputWrapper">
+                    <input
+                        placeholder="Type Label Name"
+                        type="text"
+                        className="textInput"
+                    />
+
+                </div>
+                <button className={"label-button"} onClick={handleLabelName}>
+                    <span>Done !</span>
+                </button>
             </div>
         </div>
 
