@@ -99,6 +99,32 @@ const Home = () => {
                 <h1>Project developed by.....</h1>
                 <div className="contact-section" style={{display: 'flex', gap: '40px'}}>
 
+                <div className="card-box1 card">
+                        <div className="card-content">
+                            <div className="card-image">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2784/2784488.png" alt="Profile Image"/>
+                            </div>
+                            <div className="card-text">
+                                <p className="card-name">Dr. Suresh Kumar M</p>
+                                <p className="card-job_title">Prof. @ Networking</p>
+
+                            </div>
+                            <div className="card-button">
+                                <div>
+                                    <a href={"mailto:sureshkumar.it@sairam.edu.in"}>
+                                        <button className="card-message" type="button">Mail</button>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href={"tel:+91 9940371151"}>
+                                        <button className="card-connect" type="button">Contact</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div className="card-box1 card">
                         <div className="card-content">
                             <div className="card-image">
@@ -152,7 +178,6 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-
 
 
 

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import './Login.css';
 import {Link, useNavigate} from "react-router-dom";
 
-const Login = () => {
+const Login = ({setUserId}) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -13,7 +13,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('https://smart-steps-api.netlify.app/user/signup', {
+            const response = await fetch('https://smart-steps-api.netlify.app/user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,13 +23,15 @@ const Login = () => {
 
             const data = await response.json();
 
-            if (data.created) {
-                navigate('/comparison');
+            if (data.auth) {
+                setUserId(data.id);
+                navigate('/home');
             } else {
                 alert("Invalid credentials. Please try again.");
             }
         } catch (error) {
             // Handle network or other errors
+            console.log(error);
             alert('An error occurred. Please try again later.');
         }
     };

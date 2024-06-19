@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import './Signup.css';
 import {Link, useNavigate} from "react-router-dom";
 
-const Signup = () => {
+const Signup = ({setUserId}) => {
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -24,6 +24,7 @@ const Signup = () => {
             const data = await response.json();
 
             if (data.created) {
+                setUserId(data.id);
                 navigate('/login');
             } else {
                 alert(data.message);
@@ -44,7 +45,7 @@ const Signup = () => {
                     <div className="loginpage-separator"></div>
                     <p className="loginpage-welcome-message">Please, provide your credentials to proceed and have access to all our services</p>
 
-                    <form className="loginpage-login-form">
+                    <form className="loginpage-login-form" onSubmit={handleSignup}>
                         <div className="loginpage-form-control">
                             <input
                                 type="text"
