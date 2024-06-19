@@ -5,24 +5,29 @@ import './PoseComparison.css';
 
 
 
-function PoseComparison() {
+function PoseComparison({userId}) {
 
     const videoRef = useRef(null);
     const liveVideoRef = useRef(null);
     const videoInputRef = useRef(null);
     const [uploaded, isUploaded] = useState(false);
     const [labelName, setLabelName] = useState(null);
+    const [base64String, setBase64String] = useState('');
 
 
     const [videoPose, setVideoPose] = useState(null);
     const [livePose, setLivePose] = useState(null);
     const [similarity, setSimilarity] = useState(null);
     const [matchPercentages, setMatchPercentages] = useState([]);
+    const [eachPercentageMatchSum, setEachPercentageMatchSum] = useState([0,0,0,0,0,0,0,0,0,0,0,0]);
+    const [eachPercentageMatchLength, setEachPercentageMatchLength] = useState(0);
     const [videoDuration, setVideoDuration] = useState(0);
     const [videoEnded, setVideoEnded] = useState(false);
     const limbNames = ["Right-Upper-Arm", "Right-Lower-Arm" , "Shoulder" , "Left-Upper-Arm" , "Left-Lower-Arm" , "Right-Lumbar" , "Left-Lumbar" , "Abdomen" , "Right-Thigh" , "Right-Cough" , "Left-Thigh" , "Left-Cough"]
     const [file, setFile] = useState(null);
 
+
+    const THRESHOLD = 70;
 
     useEffect(() => {
         async function setupVideo(file) {
@@ -102,7 +107,6 @@ function PoseComparison() {
         });
 
         videoRef.current.addEventListener('ended', () => {
-            // console.log("Video Ended");
             setVideoEnded(true);
         });
 
@@ -114,10 +118,10 @@ function PoseComparison() {
             setSimilarity(tempSimilarity);
 
             const percentageMatchValue = percentageMatch(tempSimilarity);
-            if (percentageMatchValue <= 85 && !videoRef.current.paused) {
+            if (percentageMatchValue <= THRESHOLD && !videoRef.current.paused) {
                 videoRef.current.pause();
             }
-            if (percentageMatchValue > 85 && !videoEnded) {
+            if (percentageMatchValue > THRESHOLD && !videoEnded) {
 
                 setMatchPercentages(prev => {
                     if (prev.length === 0) {
@@ -130,6 +134,12 @@ function PoseComparison() {
                         }
                     }
                 });
+                setEachPercentageMatchSum(prev => {
+                    let currentPercentageMatch = eachPercentageMatch(tempSimilarity);
+                    return prev.map((value, index) => value + parseFloat(currentPercentageMatch[index]));
+                });
+                setEachPercentageMatchLength(prev => prev + 1);
+
 
                 if (videoRef.current.paused) {
                     videoRef.current.play();
@@ -141,6 +151,31 @@ function PoseComparison() {
         }
 
     }, [videoPose, livePose]);
+
+    useEffect(() => {
+
+        async function uploadData() {
+            let overallMatch = matchPercentages.reduce((sum, match) => sum + match.percentage, 0) / matchPercentages.length;
+            let eachPercentageMatch = eachPercentageMatchSum.map((value) => (value / eachPercentageMatchLength).toFixed(2));
+            const bodyData = JSON.stringify({ history: { label: labelName, overAllMatch: overallMatch, eachPercentageMatch: eachPercentageMatch, graphImage: base64String } });
+            console.log(bodyData);
+            const response = await fetch('https://smart-steps-api.netlify.app/user/'+userId+"/history", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ history: { label: labelName, overAllMatch: overallMatch, eachPercentageMatch: eachPercentageMatch, graphImage: base64String } }),
+            });
+            const data = await response.json();
+            console.log(data);
+            console.log(JSON.stringify({ history: { label: labelName, overAllMatch: overallMatch, eachPercentageMatch: eachPercentageMatch, graphImage: base64String } }));
+        }
+
+        if(videoEnded){
+            uploadData().then();
+        }
+
+    }, [videoEnded]);
 
     function calculateSimilarities(pose1, pose2) {
         function getDirectionsFromPose(pose) {
@@ -257,7 +292,7 @@ function PoseComparison() {
                 <div className="layout-left">
                     <div className="layout-left-top">
                         <div className="layout-left-top-1">
-                            <video ref={videoRef} width="100%" height="100%" controls muted></video>
+                            <video id="danceVideo" ref={videoRef} width="100%" height="100%" controls muted></video>
                         </div>
                         <div className="layout-left-top-2">
                             Errors in each Limb:<br/>
@@ -298,7 +333,7 @@ function PoseComparison() {
 
 
 
-        {/*{videoEnded && <RenderChart matchPercentages={matchPercentages} videoDuration={videoDuration}/>}*/}
+        {videoEnded && <RenderChart matchPercentages={matchPercentages} videoDuration={videoDuration} setBase64String={setBase64String}/>}
 
     </div>);
 }

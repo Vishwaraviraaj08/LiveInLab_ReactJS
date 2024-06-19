@@ -20,7 +20,6 @@ const History = ({userId}) => {
     }, []);
 
     return (<div className="container-history">
-            {console.log(data)}
             {data && data.map((item, index) => (
                 <ul className="accordion">
                 <li className="accordion__item">

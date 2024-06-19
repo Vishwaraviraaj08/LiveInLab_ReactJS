@@ -26,7 +26,7 @@ function App() {
             <Route path="/signup" element={<Signup setUserId={setUserId}/>}/>
             {/*<Route path="/upload" element={<FromUploadedVideo />} />*/}
             {/*<Route path="/live" element={<FromLiveCamera />} />*/}
-            <Route path="/comparison" element={<PoseComparison/>} />
+            <Route path="/comparison" element={<PoseComparison userId={userId}/>} />
             <Route path={"/history"} element={<History userId={userId}/>}/>
             <Route path={"/home"} element={<Home/>} />
         </Routes>

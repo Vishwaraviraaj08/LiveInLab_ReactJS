@@ -1,15 +1,16 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
-const MatchPercentageChart = ({ matchPercentages, videoDuration }) => {
+const MatchPercentageChart = ({ matchPercentages, videoDuration, setBase64String }) => {
+
+    const chartRef = useRef();
     let labels = [];
     for (let i = 0.0; i <= Math.ceil(videoDuration); i += 0.01) {
         labels.push(i);
     }
-    console.log(matchPercentages.map((point) => {return {x: point.time.toFixed(2), y: point.percentage}}));
     const data = {
         labels: labels, 
         datasets: [{
@@ -35,7 +36,17 @@ const MatchPercentageChart = ({ matchPercentages, videoDuration }) => {
         }
     };
 
-    return <Line data={data} options={options} />;
+    useEffect(() => {
+        const chart = chartRef.current;
+        if (chart) {
+            const base64Image = chart.canvas.toDataURL();
+            setBase64String(base64Image);
+        }
+    }, []);
+
+    return <div styles={{display: 'none'}}>
+        <Line ref={chartRef} data={data} options={options} />;
+    </div>
 };
 
 export default MatchPercentageChart;
