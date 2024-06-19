@@ -19,6 +19,7 @@ function PoseComparison() {
     const [matchPercentages, setMatchPercentages] = useState([]);
     const [videoDuration, setVideoDuration] = useState(0);
     const [videoEnded, setVideoEnded] = useState(false);
+    const limbNames = ["Right-Upper-Arm", "Right-Lower-Arm" , "Shoulder" , "Left-Upper-Arm" , "Left-Lower-Arm" , "Right-Lumbar" , "Left-Lumbar" , "Abdomen" , "Right-Thigh" , "Right-Cough" , "Left-Thigh" , "Left-Cough"]
 
 
     useEffect(() => {
@@ -164,7 +165,7 @@ function PoseComparison() {
     function eachPercentageMatch(similarities, totalPercentageMatch) {
         const limbIndexes = [9, 10, 11, 16, 17, 22, 23, 24, 25, 27, 26, 28];
         let eachPercentageMatch = [];
-
+        const limbNames = ["Right-Upper-Arm", "Right-Lower-Arm" , "Shoulder" , "Left-Upper-Arm" , "Left-Lower-Arm" , "Right-Lumbar" , "Left-Lumbar" , "Abdomen" , "Right-Thigh" , "Right-Cough" , "Left-Thigh" , "Left-Cough"]
 
         for (let i of limbIndexes) {
             eachPercentageMatch.push((similarities[i] * 100).toFixed(2));
@@ -237,15 +238,25 @@ function PoseComparison() {
                             <video ref={videoRef} width="100%" height="100%" controls muted></video>
                         </div>
                         <div className="layout-left-top-2">
-                            Errors in each Limb:<br/> {similarity != null && <p style={{
-                            display: 'flex',
-                            flexDirection: 'column'
-                        }}> {eachPercentageMatch(similarity).map((value, index) => <li>{value}</li>)}</p>}
+                            Errors in each Limb:<br/>
+                            {similarity != null &&
+                                <p style={{display: 'flex', flexDirection: 'column'}}>
+                                    <table border={1} width={"250px"}>
+                                        <tbody>
+                                        {eachPercentageMatch(similarity).map((value, index) => (
+                                            <tr key={index}>
+                                                <td>{limbNames[index]}</td>
+                                                <td>{value}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                </p>}
                         </div>
                     </div>
                     <div className="layout-left-bottom">
-                        <div className="layout-left-bottom-1" style={{paddingLeft:'80px'}}>
-                        <video ref={liveVideoRef} width="auto" height={"100%"} autoPlay muted></video>
+                        <div className="layout-left-bottom-1" style={{paddingLeft: '80px'}}>
+                            <video ref={liveVideoRef} width="auto" height={"100%"} autoPlay muted></video>
                     </div>
                     <div className="layout-left-bottom-2">
                         overall Match : {similarity != null && <h1> {percentageMatch(similarity).toFixed(2)}% </h1>}
