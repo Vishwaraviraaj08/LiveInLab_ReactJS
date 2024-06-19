@@ -1,8 +1,37 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Signup.css';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const Signup = () => {
+
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+
+    const handleSignup = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('https://smart-steps-api.netlify.app/user/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: username, email, password }),
+            });
+
+            const data = await response.json();
+
+            if (data.created) {
+                navigate('/login');
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert('An error occurred. Please try again later.');
+        }
+    };
     return (
         <div className="loginpage-container">
             <section className="loginpage-side">
@@ -17,15 +46,30 @@ const Signup = () => {
 
                     <form className="loginpage-login-form">
                         <div className="loginpage-form-control">
-                            <input type="text" placeholder="Username" />
+                            <input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
                             <i className="fas fa-user"></i>
                         </div>
                         <div className="loginpage-form-control">
-                            <input type="text" placeholder="Email" />
+                            <input
+                                type="text"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
                             <i className="fas fa-lock"></i>
                         </div>
                         <div className="loginpage-form-control">
-                            <input type="password" placeholder="Password" />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                             <i className="fas fa-lock"></i>
                         </div>
 

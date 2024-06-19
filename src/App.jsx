@@ -9,7 +9,7 @@ import Login from './pages/login/Login.jsx'
 import Signup from "./pages/signup/Signup.jsx";
 import History from "./pages/history/History.jsx"
 import Testing from "./pages/testing/Testing.jsx";
-
+import Home from "./home/Home.jsx";
 
 
 
@@ -29,6 +29,7 @@ function App() {
             <Route path="/comparison" element={<PoseComparison/>} />
             <Route path={"/history"} element={<History/>}/>
             <Route path={"/testing"} element={<Testing/>}/>
+            <Route path={"/home"} element={<Home/>} />
         </Routes>
     </>
   )
