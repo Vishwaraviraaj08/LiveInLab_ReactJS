@@ -21,11 +21,11 @@ const Signup = () => {
                             <i className="fas fa-user"></i>
                         </div>
                         <div className="loginpage-form-control">
-                            <input type="password" placeholder="Password" />
+                            <input type="text" placeholder="Email" />
                             <i className="fas fa-lock"></i>
                         </div>
                         <div className="loginpage-form-control">
-                            <input type="password" placeholder="Confirm Password" />
+                            <input type="password" placeholder="Password" />
                             <i className="fas fa-lock"></i>
                         </div>
 

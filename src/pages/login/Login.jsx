@@ -17,7 +17,7 @@ const Login = () => {
 
                     <form className="loginpage-login-form">
                         <div className="loginpage-form-control" >
-                            <input type="text" placeholder="Username" />
+                            <input type="email" placeholder="Email" />
                             <i className="fas fa-user"></i>
                         </div>
                         <div className="loginpage-form-control">
