@@ -7,10 +7,17 @@ const Signup = ({setUserId}) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const sign = useRef(false);
     const navigate = useNavigate();
 
     const handleSignup = async (e) => {
         e.preventDefault();
+        if(sign.current){
+            return;
+        }
+        else{
+            sign.current = true;
+        }
 
         try {
             const response = await fetch('https://smart-steps-api.netlify.app/user/signup', {
@@ -25,12 +32,15 @@ const Signup = ({setUserId}) => {
 
             if (data.created) {
                 setUserId(data.id);
+                sign.current = true;
                 navigate('/login');
             } else {
                 alert(data.message);
+                sign.current = false;
             }
         } catch (error) {
             alert('An error occurred. Please try again later.');
+            sign.current = false;
         }
     };
     return (

