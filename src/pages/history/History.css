@@ -10,11 +10,13 @@
     margin: 0;
     padding: 0;
     background: #f4f4f4;
-    color: #00432f;
+    color: #000000;
     border: 1px solid #d7d9d8;
 }
 
 .accordion__item {
+    border: 3px dashed #000000;
+    margin: 10px;
     position: relative;
     list-style-type: none;
     padding: 2% 4%;
@@ -34,6 +36,9 @@ input[type="checkbox"] {
     opacity: 0;
 }
 
+input[type="checkbox"]:not(:checked) ~ .accordion__date{
+    border-bottom: 2px solid #000000;
+}
 .accordion__title {
     padding-right: 1.5rem;
     font-size: 1.25rem;
@@ -54,6 +59,7 @@ input[type="checkbox"] {
     background-color: #00432f;
     width: 3px;
     height: 9px;
+    /*margin: 20px;*/
     transition: transform 0.25s ease-in-out;
 }
 
@@ -79,12 +85,13 @@ input[type="checkbox"]:checked ~ .accordion__arrow::after {
     margin: 0;
     opacity: 1;
     overflow: hidden;
-    transition: all 0.35s ease-in-out;
+    transition: all 0.5s ease-in-out;
     line-height: 0.2;
     z-index: 2;
 }
 
 input[type="checkbox"]:checked ~ .accordion__content {
+
     max-height: 0;
     opacity: 0;
 }

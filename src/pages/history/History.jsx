@@ -26,12 +26,12 @@ const History = ({userId}) => {
                     <input type="checkbox" defaultChecked="true"/>
                     <i className="accordion__arrow"/>
                     <h2 className="accordion__title">{item.label}</h2>
-                    <h2 className="accordion__title">{new Date(item.createdAt).toDateString()}</h2>
+                    <h2 className="accordion__title accordion__date">{new Date(item.createdAt).toDateString()}</h2>
                     <p className="accordion__content" style={{display: 'flex', gap: '50px'}}>
                         <div className="accordion__content__left" style={{flex: '2'}}>
                             <h2>Overall Match : {item.overAllMatch}</h2>
                             {
-                                item.eachLimbMatch.map((val, index) => (
+                                item.eachLimbMatch.reverse().map((val, index) => (
                                     <div key={index}>
                                         <h3>{limbNames[index]} : {val}</h3>
                                     </div>
