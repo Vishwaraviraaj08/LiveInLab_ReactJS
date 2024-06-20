@@ -29,7 +29,7 @@ function PoseComparison({userId}) {
     const [file, setFile] = useState(null);
 
 
-    const THRESHOLD = 70;
+    const THRESHOLD = 80;
 
     useEffect(() => {
         async function setupVideo(file) {
