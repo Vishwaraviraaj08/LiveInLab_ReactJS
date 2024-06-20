@@ -31,7 +31,6 @@ const Login = ({setUserId}) => {
             }
         } catch (error) {
             // Handle network or other errors
-            console.log(error);
             alert('An error occurred. Please try again later.');
         }
     };

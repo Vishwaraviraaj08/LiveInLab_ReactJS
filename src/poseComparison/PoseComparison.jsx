@@ -10,6 +10,8 @@ function PoseComparison({userId}) {
     const videoRef = useRef(null);
     const liveVideoRef = useRef(null);
     const videoInputRef = useRef(null);
+    const historyUploaded = useRef(false);
+
     const [uploaded, isUploaded] = useState(false);
     const [labelName, setLabelName] = useState(null);
     const [base64String, setBase64String] = useState('');
@@ -155,7 +157,7 @@ function PoseComparison({userId}) {
     useEffect(() => {
 
         async function uploadData() {
-            let overallMatch = matchPercentages.reduce((sum, match) => sum + match.percentage, 0) / matchPercentages.length;
+            let overallMatch = (matchPercentages.reduce((sum, match) => sum + match.percentage, 0) / matchPercentages.length).toFixed(2);
             let eachPercentageMatch = eachPercentageMatchSum.map((value) => (value / eachPercentageMatchLength).toFixed(2));
             const bodyData = JSON.stringify({ history: { label: labelName, overAllMatch: overallMatch, eachPercentageMatch: eachPercentageMatch, graphImage: base64String } });
             console.log(bodyData);
@@ -164,18 +166,18 @@ function PoseComparison({userId}) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ history: { label: labelName, overAllMatch: overallMatch, eachPercentageMatch: eachPercentageMatch, graphImage: base64String } }),
+                body: JSON.stringify({ history: { label: labelName, overAllMatch: overallMatch, eachLimbMatch: eachPercentageMatch, graphImage: base64String } }),
             });
             const data = await response.json();
             console.log(data);
-            console.log(JSON.stringify({ history: { label: labelName, overAllMatch: overallMatch, eachPercentageMatch: eachPercentageMatch, graphImage: base64String } }));
         }
 
-        if(videoEnded){
+        if(videoEnded && base64String != '' && base64String.length > 10 && historyUploaded.current === false){
             uploadData().then();
+            historyUploaded.current = true;
         }
 
-    }, [videoEnded]);
+    }, [videoEnded, base64String]);
 
     function calculateSimilarities(pose1, pose2) {
         function getDirectionsFromPose(pose) {

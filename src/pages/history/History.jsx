@@ -28,7 +28,7 @@ const History = ({userId}) => {
                     <h2 className="accordion__title">{item.label}</h2>
                     <h2 className="accordion__title">{new Date(item.createdAt).toDateString()}</h2>
                     <p className="accordion__content" style={{display: 'flex', gap: '50px'}}>
-                        <div className="accordion__content__left" style={{flex: '3'}}>
+                        <div className="accordion__content__left" style={{flex: '2'}}>
                             <h2>Overall Match : {item.overAllMatch}</h2>
                             {
                                 item.eachLimbMatch.map((val, index) => (
@@ -38,9 +38,10 @@ const History = ({userId}) => {
                                 ))
                             }
                         </div>
-                        <div className="accordion__content__right" style={{flex: '2'}}>
+                        <div className="accordion__content__right" style={{flex: '3'}}>
                             <img
-                                src={`data:image/png;base64,${item.graphImage}`}
+                                style={{backgroundColor: 'black'}}
+                                src={item.graphImage}
                                 width={"100%"} height={"auto"} alt={"sample"}/>
                         </div>
                     </p>
