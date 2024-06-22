@@ -1,22 +1,23 @@
-import React, {useState} from 'react';
+import React, { useRef, useState } from 'react';
 import './Signup.css';
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Signup = ({setUserId}) => {
+const Signup = ({ setUserId }) => {
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
     const sign = useRef(false);
     const navigate = useNavigate();
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        if(sign.current){
+        if (sign.current) {
             return;
-        }
-        else{
+        } else {
             sign.current = true;
+            setLoading(true);
         }
 
         try {
@@ -32,17 +33,18 @@ const Signup = ({setUserId}) => {
 
             if (data.created) {
                 setUserId(data.id);
-                sign.current = true;
                 navigate('/login');
             } else {
                 alert(data.message);
-                sign.current = false;
             }
         } catch (error) {
             alert('An error occurred. Please try again later.');
+        } finally {
+            setLoading(false);
             sign.current = false;
         }
     };
+
     return (
         <div className="loginpage-container">
             <section className="loginpage-side">
@@ -62,6 +64,7 @@ const Signup = ({setUserId}) => {
                                 placeholder="Username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                disabled={loading}
                             />
                             <i className="fas fa-user"></i>
                         </div>
@@ -71,6 +74,7 @@ const Signup = ({setUserId}) => {
                                 placeholder="Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                disabled={loading}
                             />
                             <i className="fas fa-lock"></i>
                         </div>
@@ -80,13 +84,19 @@ const Signup = ({setUserId}) => {
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                disabled={loading}
                             />
                             <i className="fas fa-lock"></i>
                         </div>
 
-                        <button className="loginpage-submit">Sign Up</button>
-                        <h4 style={{color:"white", textAlign:"center"}}>If already have an account, <Link to={'/login'} style = {{color: '#8b33c5'}}> Sign in !</Link></h4>
+                        <button className="loginpage-submit" disabled={loading}>
+                            {loading ? 'Loading...' : 'Sign Up'}
+                        </button>
+                        <h4 style={{ color: "white", textAlign: "center" }}>
+                            If already have an account, <Link to={'/login'} style={{ color: '#8b33c5' }}> Sign in !</Link>
+                        </h4>
                     </form>
+                    {loading && <div className="loading-spinner"></div>}
                 </div>
             </section>
         </div>

