@@ -52,7 +52,7 @@ const History = ({ userId }) => {
 
     return (
         <div className="container-history">
-            {data && data.map((item, index) => (
+            {data && data.slice().reverse().map((item, index) => (
                 <ul className="accordion" key={index}>
                     <li className="accordion__item">
                         <input type="checkbox" defaultChecked="true" />
@@ -62,9 +62,9 @@ const History = ({ userId }) => {
                         <p className="accordion__content" style={{ display: 'flex', gap: '50px' }}>
                             <div className="accordion__content__left" style={{ flex: '2' }}>
                                 <h2>Overall Match: {item.overAllMatch}</h2>
-                                {item.eachLimbMatch.reverse().map((val, index) => (
-                                    <div key={index}>
-                                        <h3>{limbNames[index]}: {val}</h3>
+                                {item.eachLimbMatch.map((val, i) => (
+                                    <div key={index*100 + i}>
+                                        <h3>{limbNames[i]}: {val}</h3>
                                     </div>
                                 ))}
                             </div>
