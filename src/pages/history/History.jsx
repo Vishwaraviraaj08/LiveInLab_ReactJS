@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './History.css'; // Assuming you have copied your styles into App.css
+import generateReport from './generateReport';
 
 const History = ({ userId }) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [fullscreenImage, setFullscreenImage] = useState(null);
+    const [reportLoading, setReportLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState('');
 
-    const limbNames = ["Right-Upper-Arm", "Right-Lower-Arm", "Shoulder", "Left-Upper-Arm", "Left-Lower-Arm", "Right-Lumbar", "Left-Lumbar", "Abdomen", "Right-Thigh", "Right-Cough", "Left-Thigh", "Left-Cough"]
+    const limbNames = ["Right-Upper-Arm", "Right-Lower-Arm", "Shoulder", "Left-Upper-Arm", "Left-Lower-Arm", "Right-Lumbar", "Left-Lumbar", "Abdomen", "Right-Thigh", "Right-Cough", "Left-Thigh", "Left-Cough"];
 
     useEffect(() => {
         async function fetchData() {
@@ -35,6 +38,14 @@ const History = ({ userId }) => {
         setFullscreenImage(null);
     };
 
+    const handleReportDownload = async (item) => {
+        setReportLoading(true);
+        setLoadingMessage('Please wait 12 seconds while we generate your report...');
+        await generateReport(item);
+        setReportLoading(false);
+        setLoadingMessage('');
+    };
+
     if (loading) {
         return <div className="loading-spinner"></div>;
     }
@@ -57,14 +68,31 @@ const History = ({ userId }) => {
                                     </div>
                                 ))}
                             </div>
-                            <div className="accordion__content__right" style={{ flex: '3' }}>
+                            <div className="accordion__content__right" style={{flex: '3'}}>
                                 <img
-                                    style={{ backgroundColor: 'black', cursor: 'pointer' }}
+                                    style={{backgroundColor: 'black', cursor: 'pointer'}}
                                     src={item.graphImage}
                                     width={"100%"} height={"auto"} alt={"sample"}
-                                    onClick={() => handleImageClick(item.graphImage)} />
+                                    onClick={() => handleImageClick(item.graphImage)}/>
 
-                                <button className={"download-btn"} >Download Report</button>
+                                <br/>
+                                <br/>
+                                <br/>
+
+                                <button
+                                    className={"download-btn"}
+                                    onClick={() => handleReportDownload(item)}
+                                    disabled={reportLoading}
+                                >
+                                    {reportLoading ? 'Generating Report...' : 'Download Report'}
+                                </button>
+                                <br/>
+                                <br/>
+                                {loadingMessage && (
+                                    <div className="loading-message">
+                                        {loadingMessage}
+                                    </div>
+                                )}
                             </div>
                         </p>
                     </li>
@@ -73,12 +101,14 @@ const History = ({ userId }) => {
 
             {fullscreenImage && (
                 <div className="fullscreen-overlay" onClick={closeFullscreen}>
-                    <div className="fullscreen-content" onClick={(e) => {e.stopPropagation(); closeFullscreen()}}>
+                    <div className="fullscreen-content" onClick={(e) => { e.stopPropagation(); closeFullscreen(); }}>
                         <img src={fullscreenImage} alt="Full Screen" />
                         <button className="close-button" onClick={closeFullscreen}>×</button>
                     </div>
                 </div>
             )}
+
+
         </div>
     );
 };
