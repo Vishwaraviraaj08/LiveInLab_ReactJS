@@ -93,6 +93,7 @@ const History = ({ userId }) => {
                                         {loadingMessage}
                                     </div>
                                 )}
+
                             </div>
                         </p>
                     </li>
