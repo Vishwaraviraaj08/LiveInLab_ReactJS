@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { marked } from 'marked';
 import PDFDocument from 'pdfkit-browserify';
 
-const API_KEY = process.env.API_KEY;
+const API_KEY = "AIzaSyAafzAvzz0We5pbSlo2xCw8tBB-GsAovq4";
 
 export async function generateText(data, model = "gemini-pro") {
     const genAI = new GoogleGenerativeAI(API_KEY);
