@@ -3,7 +3,7 @@ import { marked } from 'marked';
 import PDFDocument from 'pdfkit-browserify';
 
 // const API_KEY = "AIzaSyAafzAvzz0We5pbSlo2xCw8tBB-GsAovq4";
-const API_KEY = "AIzaSyBaWBRrR_InPKNOmofls6lFg7abXO4vENo";
+const API_KEY = "AIzaSyD9PUORJgf-h09mSnWX7RHkPJ5Mk2WuV0c";
 
 export async function generateText(data, model = "gemini-pro") {
     const genAI = new GoogleGenerativeAI(API_KEY);
